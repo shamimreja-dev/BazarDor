@@ -48,6 +48,8 @@ export default async function RootLayout({
       data-theme="light"
     >
       <body className="min-h-full flex flex-col bg-slate-50 text-slate-900 font-sans">
+             suppressHydrationWarning
+
         {/* টোস্ট নোটিফিকেশন কন্টেইনার */}
         <Toaster position="top-center" />
 
