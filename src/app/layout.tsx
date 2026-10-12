@@ -47,8 +47,9 @@ export default async function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
       data-theme="light"
     >
-      <body className="min-h-full flex flex-col bg-slate-50 text-slate-900 font-sans">
-             suppressHydrationWarning
+      <body suppressHydrationWarning
+       className="min-h-full flex flex-col bg-slate-50 text-slate-900 font-sans">
+             
 
         {/* টোস্ট নোটিফিকেশন কন্টেইনার */}
         <Toaster position="top-center" />
