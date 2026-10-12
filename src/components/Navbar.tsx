@@ -1,10 +1,8 @@
-// components/Navbar.tsx
 'use client';
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Product, toBengaliNumber, getUnitBn } from '@/lib/utils';
-import { useSession, signOut } from '@/lib/auth-client'; // BetterAuth Client
 
 interface NavbarProps {
   products: Product[];
