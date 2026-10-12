@@ -1,167 +1,180 @@
+// src/components/Navbar.tsx
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Product, toBengaliNumber } from '@/lib/utils';
 import { useSession, signOut } from '@/lib/auth-client';
-import { useState } from 'react';
 
-interface NavbarProps {
-  products: Product[];
-}
-
-export default function Navbar({ products }: NavbarProps) {
-  const pathname = usePathname();
+export default function Navbar() {
   const { data: session, isPending } = useSession();
-  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const pathname = usePathname();
 
-  // Unique Categories Extract
-  const categories = Array.from(
-    new Map(
-      (products || []).map((p) => [
-        p.category,
-        { slug: p.category, nameBn: p.categoryNameBn, icon: p.categoryIcon },
-      ])
-    ).values()
-  );
+  const categories = [
+    { name: 'চাল', icon: '🍚', slug: 'চাল' },
+    { name: 'ডাল', icon: '🫘', slug: 'ডাল' },
+    { name: 'তেল', icon: '🛢️', slug: 'তেল' },
+    { name: 'সবজি', icon: '🥬', slug: 'সবজি' },
+    { name: 'মাছ', icon: '🐟', slug: 'মাছ' },
+    { name: 'মাংস', icon: '🍗', slug: 'মাংস' },
+    { name: 'ডিম-দুধ', icon: '🥛', slug: 'ডিম-দুধ' },
+    { name: 'মসলা', icon: '🌶️', slug: 'মসলা' },
+  ];
 
   return (
     <header className="bg-white border-b sticky top-0 z-50">
-      {/* 1. Top Navbar */}
-      <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-        {/* Logo & Bangla Date */}
-        <Link href="/" className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-emerald-600 rounded-xl flex items-center justify-center text-white text-xl font-bold shadow-sm">
+      {/* Top Main Navbar */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        <Link href="/" className="flex items-center gap-3 shrink-0">
+          <div className="w-10 h-10 bg-emerald-600 rounded-2xl flex items-center justify-center text-white text-xl font-black shadow-sm shrink-0">
             🛒
           </div>
-          <div>
-            <h1 className="text-xl font-black text-slate-800 leading-tight">বাজার দর</h1>
-            <p className="text-[11px] text-gray-500 font-medium">সোমবার, ১২ অক্টোবর, ২০২৬</p>
+          <div className="flex flex-col justify-center">
+            <span className="text-lg sm:text-xl font-black text-slate-800 leading-none">
+              বাজার দর
+            </span>
+            <span className="text-[10px] text-gray-400 font-medium mt-1">
+              মঙ্গলবার, ১৩ অক্টোবর, ২০২৬
+            </span>
           </div>
         </Link>
 
-        {/* Right Side Auth Condition (Figma Style) */}
-        <div>
+        {/* Desktop Auth */}
+        <div className="hidden md:flex items-center gap-3">
           {isPending ? (
-            <div className="w-28 h-9 bg-gray-100 rounded-full animate-pulse"></div>
+            <div className="w-24 h-9 bg-slate-100 rounded-xl animate-pulse"></div>
           ) : session ? (
-            /* Logged In State: Profile Image + Name + Dropdown */
-            <div className="relative">
-              <button
-                onClick={() => setDropdownOpen(!dropdownOpen)}
-                className="flex items-center gap-2 bg-slate-50 border hover:bg-slate-100 px-3 py-1.5 rounded-full transition-all text-sm font-semibold text-slate-800"
-              >
-                {session.user.image ? (
-                  <img
-                    src={session.user.image}
-                    alt={session.user.name || 'User'}
-                    className="w-7 h-7 rounded-full object-cover border"
-                  />
-                ) : (
-                  <div className="w-7 h-7 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs font-bold">
-                    {session.user.name?.charAt(0) || 'U'}
-                  </div>
-                )}
-                <span>{session.user.name || 'Rezwan'}</span>
-                <span className="text-xs text-gray-400">▾</span>
-              </button>
-
-              {/* Profile Dropdown Menu */}
-              {dropdownOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-white border rounded-2xl shadow-lg py-2 z-50 text-sm">
-                  <div className="px-4 py-2 border-b">
-                    <p className="font-bold text-slate-800">{session.user.name}</p>
-                    <p className="text-xs text-gray-400 truncate">{session.user.email}</p>
-                  </div>
-                  <Link
-                    href="/profile"
-                    onClick={() => setDropdownOpen(false)}
-                    className="block px-4 py-2 text-gray-700 hover:bg-emerald-50 hover:text-emerald-600"
-                  >
-                    মাই প্রোফাইল
-                  </Link>
-                  <button
-                    onClick={() => {
-                      setDropdownOpen(false);
-                      signOut();
-                    }}
-                    className="w-full text-left px-4 py-2 text-rose-600 hover:bg-rose-50 font-medium"
-                  >
-                    সাইন আউট
-                  </button>
+            <Link
+              href="/profile"
+              className="flex items-center gap-2 px-3 py-1.5 rounded-xl hover:bg-slate-50 transition-all border border-slate-200"
+            >
+              {session.user.image ? (
+                <img
+                  src={session.user.image}
+                  alt="Profile"
+                  className="w-8 h-8 rounded-full object-cover"
+                />
+              ) : (
+                <div className="w-8 h-8 rounded-full bg-emerald-600 text-white font-bold flex items-center justify-center text-xs">
+                  {session.user.name?.charAt(0) || 'U'}
                 </div>
               )}
-            </div>
+              <span className="text-xs font-bold text-slate-700">
+                {session.user.name}
+              </span>
+            </Link>
           ) : (
-            /* Not Logged In State: Sign In + Sign Up Buttons */
             <div className="flex items-center gap-2">
               <Link
                 href="/signin"
-                className="px-4 py-2 text-xs sm:text-sm font-semibold text-slate-700 hover:text-emerald-600 transition-colors"
+                className="px-4 py-2 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-100 transition-all"
               >
                 সাইন ইন
               </Link>
               <Link
                 href="/signup"
-                className="px-4 py-2 text-xs sm:text-sm font-bold bg-emerald-600 hover:bg-emerald-700 text-white rounded-full transition-all shadow-sm"
+                className="px-4 py-2 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm transition-all"
               >
                 সাইন আপ
               </Link>
             </div>
           )}
         </div>
+
+        {/* Mobile Hamburger Button */}
+        <div className="flex md:hidden items-center">
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="p-2 rounded-xl text-slate-700 hover:bg-slate-100 focus:outline-none transition-all"
+          >
+            {isMenuOpen ? (
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            ) : (
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            )}
+          </button>
+        </div>
+
+        {/* Floating Mobile Dropdown */}
+        {isMenuOpen && (
+          <div className="md:hidden absolute top-14 right-4 w-48 bg-white border border-slate-200 rounded-2xl p-2 shadow-xl z-50">
+            {session ? (
+              <div className="space-y-1">
+                <div className="px-3 py-2 border-b">
+                  <p className="text-xs font-bold text-slate-800 truncate">{session.user.name}</p>
+                </div>
+                <Link
+                  href="/profile"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="block px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 rounded-xl"
+                >
+                  প্রোফাইল
+                </Link>
+                <button
+                  onClick={() => {
+                    signOut();
+                    setIsMenuOpen(false);
+                  }}
+                  className="block w-full text-left px-3 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-50 rounded-xl"
+                >
+                  সাইন আউট
+                </button>
+              </div>
+            ) : (
+              <div className="flex flex-col gap-1.5 p-1">
+                <Link
+                  href="/signin"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="w-full text-center py-2 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-100 transition-all border"
+                >
+                  সাইন ইন
+                </Link>
+                <Link
+                  href="/signup"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="w-full text-center py-2 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm transition-all"
+                >
+                  সাইন আপ
+                </Link>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
-      {/* 2. Category Nav Row */}
-      <div className="border-t bg-slate-50/50">
-        <div className="max-w-7xl mx-auto px-4 flex items-center gap-6 overflow-x-auto py-2.5 text-xs sm:text-sm font-semibold text-gray-600">
+      {/* Category Navigation Bar (Exact Design as Screenshot) */}
+      <div className="border-t bg-slate-50/60">
+        <div className="max-w-6xl mx-auto px-4 flex items-center justify-center gap-6 overflow-x-auto py-2.5 scrollbar-none">
           <Link
             href="/"
-            className={`whitespace-nowrap px-3 py-1 rounded-full transition-all ${
-              pathname === '/' ? 'bg-emerald-600 text-white font-bold' : 'hover:text-emerald-600'
+            className={`flex items-center gap-1.5 text-xs font-bold transition-all shrink-0 px-2.5 py-1 rounded-xl ${
+              pathname === '/' ? 'text-emerald-700 bg-emerald-100/60' : 'text-slate-600 hover:text-emerald-600'
             }`}
           >
-            সব পণ্য
+            <span>সব পণ্য</span>
           </Link>
           {categories.map((cat) => {
-            const isActive = pathname === `/category/${cat.slug}`;
+            const isActive = pathname.includes(encodeURIComponent(cat.slug));
             return (
               <Link
-                key={cat.slug}
-                href={`/category/${cat.slug}`}
-                className={`flex items-center gap-1.5 whitespace-nowrap px-3 py-1 rounded-full transition-all ${
-                  isActive ? 'bg-emerald-600 text-white font-bold' : 'hover:text-emerald-600'
+                key={cat.name}
+                href={`/category/${encodeURIComponent(cat.slug)}`}
+                className={`flex items-center gap-1.5 text-xs font-bold transition-all shrink-0 px-2.5 py-1 rounded-xl ${
+                  isActive ? 'text-emerald-700 bg-emerald-100/60' : 'text-slate-700 hover:text-emerald-600'
                 }`}
               >
-                <span>{cat.icon}</span>
-                <span>{cat.nameBn}</span>
+                <span className="text-sm">{cat.icon}</span>
+                <span>{cat.name}</span>
               </Link>
             );
           })}
         </div>
       </div>
-       
-          {/* Marquee Ticker */}
-          <div className="bg-slate-900 text-white overflow-hidden py-2 text-xs relative">
-              <div className="animate-marquee flex gap-8 items-center">
-                  {/* প্রথমবার পণ্যের তালিকা */}
-                  {(products || []).concat(products || []).map((item, index) => {
-                      const isUp = item.change?.dir === 'up';
-                      const isDown = item.change?.dir === 'down';
-                      return (
-                          <div key={`${item.id}-${index}`} className="flex items-center gap-2 whitespace-nowrap">
-                              <span>{item.image || item.categoryIcon}</span>
-                              <span className="font-semibold">{item.nameBn}</span>
-                              <span className="text-amber-400">{toBengaliNumber(item.today)} টাকা/{item.unit}</span>
-                              <span className={`font-bold text-[10px] ${isUp ? 'text-green-400' : isDown ? 'text-red-400' : 'text-gray-400'}`}>
-                                  {isUp ? '▲' : isDown ? '▼' : '—'} {toBengaliNumber(Math.abs(item.change?.pct || 0))}%
-                              </span>
-                          </div>
-                      );
-                  })}
-              </div>
-          </div>
-        
     </header>
   );
 }

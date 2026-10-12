@@ -1,14 +1,14 @@
-// src/app/profile/page.tsx
 'use client';
 
 import { useState } from 'react';
-import { useSession, signOut } from '@/lib/auth-client';
+import { useSession, signOut, updateUser } from '@/lib/auth-client';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 
 export default function ProfilePage() {
   const { data: session, isPending } = useSession();
   const router = useRouter();
+
   const [name, setName] = useState(session?.user?.name || '');
   const [loading, setLoading] = useState(false);
 
@@ -39,12 +39,18 @@ export default function ProfilePage() {
     setLoading(true);
 
     try {
-      // BetterAuth profile update logic can be placed here if supported, 
-      // or handle name state update
-      toast.success('প্রোফাইল সফলভাবে আপডেট করা হয়েছে!');
-      router.refresh();
+      const { error } = await updateUser({
+        name: name,
+      });
+
+      if (error) {
+        toast.error(error.message || 'নাম আপডেট করতে সমস্যা হয়েছে');
+      } else {
+        toast.success('প্রোফাইলের নাম সফলভাবে আপডেট করা হয়েছে!');
+        router.refresh();
+      }
     } catch {
-      toast.error('আপডেট করতে সমস্যা হয়েছে');
+      toast.error('একটি ত্রুটি ঘটেছে');
     } finally {
       setLoading(false);
     }
@@ -53,13 +59,12 @@ export default function ProfilePage() {
   return (
     <div className="min-h-[calc(100vh-200px)] py-10 px-4 bg-slate-50/50">
       <div className="max-w-2xl mx-auto space-y-6">
-        {/* Header Title */}
         <div>
           <h1 className="text-2xl font-black text-slate-800">আমার প্রোফাইল</h1>
           <p className="text-xs text-gray-500">আপনার অ্যাকাউন্টের তথ্য এখানে দেখুন</p>
         </div>
 
-        {/* User Card */}
+        {/* User Info Card */}
         <div className="bg-white border rounded-3xl p-6 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             {session.user.image ? (
@@ -87,9 +92,9 @@ export default function ProfilePage() {
           </button>
         </div>
 
-        {/* Update Form Section */}
+        {/* Update Form */}
         <div className="bg-white border rounded-3xl p-6 shadow-sm space-y-4">
-          <h3 className="text-sm font-bold text-slate-800 border-b pb-3">তথ্য</h3>
+          <h3 className="text-sm font-bold text-slate-800 border-b pb-3">তথ্য পরিবর্তন</h3>
 
           <form onSubmit={handleUpdateProfile} className="space-y-4">
             <div>
@@ -98,7 +103,7 @@ export default function ProfilePage() {
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="আপনার নাম লিখুন"
+                required
                 className="w-full px-4 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
               />
             </div>
@@ -108,7 +113,7 @@ export default function ProfilePage() {
               disabled={loading}
               className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl transition-all shadow-sm text-sm disabled:opacity-50"
             >
-              {loading ? 'অপেক্ষা করুন...' : 'আপডেট'}
+              {loading ? 'আপডেট হচ্ছে...' : 'আপডেট করুন'}
             </button>
           </form>
         </div>
