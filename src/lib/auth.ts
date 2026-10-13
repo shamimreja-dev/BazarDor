@@ -14,9 +14,8 @@ export const auth = betterAuth({
   database: mongodbAdapter(db),
 
   trustedOrigins: [
-    "https://bazar-dor-beige-one.vercel.app",
-    "https://bazar-4uf0cmg9k-shamim-reja232.vercel.app",
-  ],
+  "https://bazar-dor-beige-one.vercel.app",
+],
 
   emailAndPassword: {
     enabled: true,
