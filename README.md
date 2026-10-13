@@ -7,11 +7,11 @@
 ## 🌐 Project Links
 
 - **Live Website:** https://bazar-dor-beige-one.vercel.app/
-- **GitHub Repository:** https://github.com/ProgrammingHero1/B14-A7-Bazar-Dor
+- **GitHub Repository:** https://github.com/shamimreja-dev/BazarDor
 
 ## ✨ Features
 
-- 📊 পণ্যের দাম বৃদ্ধি ও হ্রাসের তালিকা
+- 📊 পণ্যের দাম বৃদ্ধি ও হ্রাসের তালি
 - 🛍️ সব পণ্য ও বিস্তারিত তথ্য দেখা
 - 🗂️ ক্যাটাগরি অনুযায়ী পণ্য ফিল্টার
 - ↕️ দাম কম থেকে বেশি ও বেশি থেকে কম সাজানো
