@@ -4,6 +4,11 @@
 
 বাজার দর একটি responsive web application, যেখানে ব্যবহারকারীরা নিত্যপ্রয়োজনীয় পণ্যের দাম, দাম বৃদ্ধি-হ্রাস এবং বাজারভিত্তিক মূল্য দেখতে পারবেন।
 
+## 🌐 Project Links
+
+- **Live Website:** 
+- **GitHub Repository:** https://github.com/ProgrammingHero1/B14-A7-Bazar-Dor
+
 ## ✨ Features
 
 - 📊 পণ্যের দাম বৃদ্ধি ও হ্রাসের তালিকা
@@ -46,10 +51,7 @@ npm run dev
 
 Create a `.env.local` file and configure the required Better Auth, MongoDB and OAuth environment variables. Never commit secrets to GitHub.
 
-## 🌐 Project Links
 
-- **Live Website:** YOUR_LIVE_URL
-- **GitHub Repository:** YOUR_GITHUB_REPOSITORY_URL
 
 ## 📌 Requirements Checklist
 
