@@ -1,4 +1,4 @@
-// src/lib/auth.ts
+
 import { betterAuth } from "better-auth";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
 import { MongoClient } from "mongodb";
@@ -8,10 +8,10 @@ if (!process.env.MONGODB_URI) {
 }
 
 const client = new MongoClient(process.env.MONGODB_URI);
-const db = client.db("bazardor"); // ডাটাবেজ ইনস্ট্যান্স
+const db = client.db("bazardor");
 
 export const auth = betterAuth({
-  database: mongodbAdapter(db), // এখানে সরাসরি db পাস করা হলো
+  database: mongodbAdapter(db),
   emailAndPassword: {  
     enabled: true,
   },

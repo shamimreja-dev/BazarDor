@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useSession } from '@/lib/auth-client';
 import Link from 'next/link';
+import toast from 'react-hot-toast';
 
 interface MarketRow {
   marketName: string;
@@ -40,10 +41,12 @@ export default function ProductDetailPage() {
 
   const [product, setProduct] = useState<ProductDetail | null>(null);
   const [loading, setLoading] = useState(true);
+  const [notFoundState, setNotFoundState] = useState(false);
 
-  // Protected Route Check
+  // Protected Route Check with Toast
   useEffect(() => {
     if (!sessionLoading && !session) {
+      toast.error('প্রোডাক্ট বিস্তারিত দেখতে অনুগ্রহ করে সাইন-ইন করুন');
       router.push('/signin');
     }
   }, [session, sessionLoading, router]);
@@ -55,14 +58,21 @@ export default function ProductDetailPage() {
         const list = Array.isArray(data) ? data : data.data || [];
         const found = list.find((item: ProductDetail) => 
           String(item.id) === decodedSlug || 
-          item.name === decodedSlug || 
-          item.nameBn === decodedSlug
-        ) || list[0];
+          String(item.name).toLowerCase() === decodedSlug.toLowerCase() || 
+          String(item.nameBn).toLowerCase() === decodedSlug.toLowerCase()
+        );
 
-        setProduct(found || null);
+        if (!found) {
+          setNotFoundState(true);
+        } else {
+          setProduct(found);
+        }
         setLoading(false);
       })
-      .catch(() => setLoading(false));
+      .catch(() => {
+        setLoading(false);
+        setNotFoundState(true);
+      });
   }, [decodedSlug]);
 
   if (sessionLoading || loading) {
@@ -76,22 +86,41 @@ export default function ProductDetailPage() {
 
   if (!session) return null;
 
+  // যদি অজানা বা ভুল প্রোডাক্ট হয়
+  if (notFoundState || !product) {
+    return (
+      <div className="min-h-[60vh] flex flex-col items-center justify-center text-center px-4 space-y-4">
+        <h1 className="text-6xl font-black text-emerald-600">404</h1>
+        <h2 className="text-xl font-bold text-slate-800">পণ্যটি পাওয়া যায়নি</h2>
+        <p className="text-sm font-medium text-slate-500 max-w-sm">
+          &quot;{decodedSlug}&quot; নামের কোনো পণ্য আমাদের ডাটাবেজে পাওয়া যায়নি।
+        </p>
+        <Link
+          href="/"
+          className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-6 py-3 rounded-xl text-xs transition-all shadow-sm"
+        >
+          হোম পেজে ফিরে যান
+        </Link>
+      </div>
+    );
+  }
+
   const basePrice = Number(product?.today || product?.price || 66);
 
-  // বাজারভিত্তিক টেবিল ডাটা (আপনার স্ক্রিনশটের আদলে)
+  // বাজারভিত্তিক টেবিল ডাটা
   const marketRows: MarketRow[] = [
     { marketName: 'হাট বাজার', division: 'ময়মনসিংহ', minPrice: basePrice - 5, maxPrice: basePrice + 6, avgPrice: basePrice - 4 },
     { marketName: 'সদর বাজার', division: 'রাজশাহী', minPrice: basePrice - 6, maxPrice: basePrice + 2, avgPrice: basePrice - 3 },
     { marketName: 'বাজারঘাট', division: 'খুলনা', minPrice: basePrice - 6, maxPrice: basePrice + 3, avgPrice: basePrice - 1.5 },
     { marketName: 'রূপসফট বাজার', division: 'রাজশাহী', minPrice: basePrice - 6, maxPrice: basePrice + 4, avgPrice: basePrice - 0 },
     { marketName: 'টাউন বাজার', division: 'ময়মনসিংহ', minPrice: basePrice - 6, maxPrice: basePrice + 5, avgPrice: basePrice - 1.5 },
-    { marketName: 'আড়ংঘাটা বাজার', division: 'চট্টগ্রাম', minPrice: basePrice - 7, maxPrice: basePrice + 2, avgPrice: basePrice - 4 },
+    { marketName: 'আড়ংঘাটা বাজার', division: 'চট্টগ্রাম', minPrice: basePrice - 7, maxPrice: basePrice + 2, avgPrice: basePrice - 4 },
     { marketName: 'সোকলাহট বাজার', division: 'খুলনা', minPrice: basePrice - 4, maxPrice: basePrice + 5, avgPrice: basePrice - 0.5 },
     { marketName: 'চৌরাস্তা বাজার', division: 'সিলেট', minPrice: basePrice - 5, maxPrice: basePrice + 10, avgPrice: basePrice + 1 },
     { marketName: 'গ্রীন মার্কেট, মিরপুর', division: 'ঢাকা', minPrice: basePrice - 2, maxPrice: basePrice + 10, avgPrice: basePrice + 3.5 },
     { marketName: 'চৌধুরী বাজার', division: 'চট্টগ্রাম', minPrice: basePrice - 3, maxPrice: basePrice + 4, avgPrice: basePrice + 2 },
     { marketName: 'আজমবাজার', division: 'সিলেট', minPrice: basePrice - 18, maxPrice: basePrice + 10, avgPrice: basePrice + 2.5 },
-    { marketName: 'তাড়াকান্দা বাজার', division: 'ঢাকা', minPrice: basePrice - 2, maxPrice: basePrice + 4, avgPrice: basePrice + 3 },
+    { marketName: 'তাড়াকান্দা বাজার', division: 'ঢাকা', minPrice: basePrice - 2, maxPrice: basePrice + 4, avgPrice: basePrice + 3 },
   ];
 
   const allMins = marketRows.map(m => m.minPrice);
@@ -119,7 +148,7 @@ export default function ProductDetailPage() {
           <div>
             <h1 className="text-2xl font-black text-slate-800">{product?.nameBn || product?.name}</h1>
             <p className="text-xs text-gray-400">প্রতি {product?.unit || 'কেজি'} আজকের বাজার দর</p>
-            <p className="text-xs text-emerald-600 mt-1 font-medium">গতকালের তুলনায় আজ দাম বেড়েছে ২ টাকা</p>
+            <p className="text-xs text-emerald-600 mt-1 font-medium">গতকালের তুলনায় আজ দাম বেড়েছে ২ টাকা</p>
           </div>
         </div>
 

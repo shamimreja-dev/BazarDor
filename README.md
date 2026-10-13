@@ -1,36 +1,64 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🛒 বাজার দর | BazarDor
 
-## Getting Started
+**প্রয়োজনীয় পণ্যের দাম এক নজরে।**
 
-First, run the development server:
+বাজার দর একটি responsive web application, যেখানে ব্যবহারকারীরা নিত্যপ্রয়োজনীয় পণ্যের দাম, দাম বৃদ্ধি-হ্রাস এবং বাজারভিত্তিক মূল্য দেখতে পারবেন।
+
+## ✨ Features
+
+- 📊 পণ্যের দাম বৃদ্ধি ও হ্রাসের তালিকা
+- 🛍️ সব পণ্য ও বিস্তারিত তথ্য দেখা
+- 🗂️ ক্যাটাগরি অনুযায়ী পণ্য ফিল্টার
+- ↕️ দাম কম থেকে বেশি ও বেশি থেকে কম সাজানো
+- 🔐 Email/Password, Google ও GitHub authentication
+- 👤 User profile update
+- 📱 Responsive design for all devices
+- ⚡ Loading skeleton, toast notifications ও custom 404 page
+
+## 🛠️ Technologies Used
+
+- Next.js (App Router)
+- React & TypeScript
+- Tailwind CSS
+- Better Auth
+- MongoDB
+- BazarDor API
+- Git & GitHub
+
+## 🔌 API
+
+**Base URL:** `https://openapi.programming-hero.com/api/bazardor`
+
+- `/products` — All products
+- `/products?category=chal` — Filter products
+- `/products/1` — Product details
+- `/categories` — All categories
+- `/categories/chal` — Category details
+
+## 🚀 Installation
 
 ```bash
+git clone YOUR_GITHUB_REPOSITORY_URL
+cd bazardor
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Create a `.env.local` file and configure the required Better Auth, MongoDB and OAuth environment variables. Never commit secrets to GitHub.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🌐 Project Links
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Live Website:** YOUR_LIVE_URL
+- **GitHub Repository:** YOUR_GITHUB_REPOSITORY_URL
 
-## Learn More
+## 📌 Requirements Checklist
 
-To learn more about Next.js, take a look at the following resources:
+- [ ] Responsive mobile, tablet and desktop design
+- [ ] Minimum 8 meaningful Git commits
+- [ ] Successful production build and deployment
+- [ ] Working authentication and protected routes
+- [ ] Loading states and friendly 404 page
+- [ ] Live and GitHub links added
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+।**

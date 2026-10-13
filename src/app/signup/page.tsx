@@ -26,8 +26,8 @@ export default function SignUpPage() {
       return;
     }
 
-    if (password.length < 6) {
-      const msg = 'পাসওয়ার্ড অন্তত ৬ অক্ষরের হতে হবে।';
+    if (password.length < 8) {
+      const msg = 'পাসওয়ার্ড অন্তত 8 অক্ষরের হতে হবে।';
       setErrorMessage(msg);
       toast.error(msg);
       return;
@@ -117,7 +117,7 @@ export default function SignUpPage() {
             <label className="block text-xs font-bold text-slate-700 mb-1">পাসওয়ার্ড</label>
             <input
               type="password"
-              placeholder="••••••••"
+              placeholder="Enter your password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium"

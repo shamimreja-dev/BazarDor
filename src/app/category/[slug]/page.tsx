@@ -73,9 +73,10 @@ export default function CategoryPage() {
   if (filtered.length === 0) {
     return (
       <div className="min-h-[60vh] flex flex-col items-center justify-center text-center px-4 space-y-4">
-        <h1 className="text-4xl font-black text-slate-800">404</h1>
-        <p className="text-sm font-medium text-slate-500">
-          &quot;{categorySlug}&quot; ক্যাটাগরিতে কোনো পণ্য পাওয়া যায়নি।
+        <h1 className="text-6xl font-black text-emerald-600">404</h1>
+        <h2 className="text-xl font-bold text-slate-800">কোনো পণ্য পাওয়া যায়নি</h2>
+        <p className="text-sm font-medium text-slate-500 max-w-sm">
+          &quot;{categorySlug}&quot; ক্যাটাগরি বা ইউআরএলটি সঠিক নয় অথবা কোনো পণ্য উপলব্ধ নেই।
         </p>
         <Link
           href="/"
