@@ -12,11 +12,19 @@ const db = client.db("bazardor");
 
 export const auth = betterAuth({
   database: mongodbAdapter(db),
-  emailAndPassword: {  
+
+  trustedOrigins: [
+    "https://bazar-dor-beige-one.vercel.app",
+    "https://bazar-4uf0cmg9k-shamim-reja232.vercel.app",
+  ],
+
+  emailAndPassword: {
     enabled: true,
   },
+
   socialProviders: {
-    ...(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET
+    ...(process.env.GOOGLE_CLIENT_ID &&
+    process.env.GOOGLE_CLIENT_SECRET
       ? {
           google: {
             clientId: process.env.GOOGLE_CLIENT_ID,
@@ -24,7 +32,9 @@ export const auth = betterAuth({
           },
         }
       : {}),
-    ...(process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET
+
+    ...(process.env.GITHUB_CLIENT_ID &&
+    process.env.GITHUB_CLIENT_SECRET
       ? {
           github: {
             clientId: process.env.GITHUB_CLIENT_ID,
