@@ -1,33 +1,41 @@
-// src/app/signup/page.tsx
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { signUp, signIn } from '@/lib/auth-client';
+import { signUp, signIn, useSession } from '@/lib/auth-client';
 import toast from 'react-hot-toast';
 
 export default function SignUpPage() {
   const router = useRouter();
+  const { data: session, isPending } = useSession();
+
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
+  // ইউজার ইতোমধ্যে লগইন থাকলে সরাসরি হোম পেজে পাঠাবে
+  useEffect(() => {
+    if (session && !isPending) {
+      router.push('/');
+    }
+  }, [session, isPending, router]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage('');
 
     if (!name || !email || !password) {
-      const msg = 'অনুগ্রহ করে সকল ফিল্ড সঠিক তথ্য দিয়ে পূরণ করুন।';
+      const msg = 'অনুগ্রহ করে সকল ফিল্ড সঠিক তথ্য দিয়ে পূরণ করুন।';
       setErrorMessage(msg);
       toast.error(msg);
       return;
     }
 
     if (password.length < 8) {
-      const msg = 'পাসওয়ার্ড অন্তত 8 অক্ষরের হতে হবে।';
+      const msg = 'পাসওয়ার্ড অন্তত 8 অক্ষরের হতে হবে।';
       setErrorMessage(msg);
       toast.error(msg);
       return;
@@ -42,15 +50,16 @@ export default function SignUpPage() {
       });
 
       if (res.error) {
-        const errorText = res.error.message || 'রেজিস্ট্রেশনে সমস্যা হয়েছে।';
+        const errorText = res.error.message || 'রেজিস্ট্রেশনে সমস্যা হয়েছে।';
         setErrorMessage(errorText);
         toast.error(errorText);
       } else {
-        toast.success('অ্যাাকাউন্ট সফলভাবে তৈরি হয়েছে! লগইন করুন।');
-        router.push('/signin');
+        toast.success('অ্যাাকাউন্ট সফলভাবে তৈরি হয়েছে!');
+        router.push('/'); // সরাসরি হোম পেজে রিডাইরেক্ট করবে
+        router.refresh();
       }
     } catch {
-      const fallbackMsg = 'রেজিস্ট্রেশন ব্যর্থ হয়েছে। আবার চেষ্টা করুন।';
+      const fallbackMsg = 'রেজিস্ট্রেশন ব্যর্থ হয়েছে। আবার চেষ্টা করুন।';
       setErrorMessage(fallbackMsg);
       toast.error(fallbackMsg);
     } finally {
@@ -62,13 +71,21 @@ export default function SignUpPage() {
     try {
       await signIn.social({
         provider,
-        callbackURL: '/',
+        callbackURL: '/', // সোশ্যাল লগইনের পর সরাসরি হোম পেজে পাঠাবে
       });
       toast.success(`${provider} এর মাধ্যমে রেজিস্টার হচ্ছে...`);
     } catch {
-      toast.error('সোশ্যাল লগইনে সমস্যা হয়েছে।');
+      toast.error('সোশ্যাল লগইনে সমস্যা হয়েছে।');
     }
   };
+
+  if (isPending) {
+    return (
+      <div className="min-h-[75vh] flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-[75vh] flex items-center justify-center px-4 py-8 font-sans">
@@ -114,7 +131,7 @@ export default function SignUpPage() {
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1">পাসওয়ার্ড</label>
+            <label className="block text-xs font-bold text-slate-700 mb-1">পাসওয়ার্ড</label>
             <input
               type="password"
               placeholder="Enter your password"

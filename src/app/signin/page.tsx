@@ -1,24 +1,33 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { signIn } from '@/lib/auth-client';
+import { signIn, useSession } from '@/lib/auth-client';
 import toast from 'react-hot-toast';
 
 export default function SignInPage() {
   const router = useRouter();
+  const { data: session, isPending } = useSession();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+
+  // ইউজার ইতোমধ্যে লগইন করা থাকলে সরাসরি হোম পেজে রিডাইরেক্ট করবে
+  useEffect(() => {
+    if (session && !isPending) {
+      router.push('/');
+    }
+  }, [session, isPending, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage('');
 
     if (!email || !password) {
-      const msg = 'অনুগ্রহ করে ইমেইল এবং পাসওয়ার্ড প্রদান করুন।';
+      const msg = 'অনুগ্রহ করে ইমেইল এবং পাসওয়ার্ড প্রদান করুন।';
       setErrorMessage(msg);
       toast.error(msg);
       return;
@@ -32,16 +41,16 @@ export default function SignInPage() {
       });
 
       if (res.error) {
-        const errorText = res.error.message || 'ইমেইল বা পাসওয়ার্ড ভুল হয়েছে।';
+        const errorText = res.error.message || 'ইমেইল বা পাসওয়ার্ড ভুল হয়েছে।';
         setErrorMessage(errorText);
         toast.error(errorText);
       } else {
-        toast.success('সফলভাবে লগইন হয়েছে!');
+        toast.success('সফলভাবে লগইন হয়েছে!');
         router.push('/');
         router.refresh();
       }
     } catch {
-      const fallbackMsg = 'লগইন করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।';
+      const fallbackMsg = 'লগইন করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।';
       setErrorMessage(fallbackMsg);
       toast.error(fallbackMsg);
     } finally {
@@ -57,9 +66,17 @@ export default function SignInPage() {
       });
       toast.success(`${provider} এর মাধ্যমে লগইন হচ্ছে...`);
     } catch {
-      toast.error('সোশ্যাল লগইনে সমস্যা হয়েছে।');
+      toast.error('সোশ্যাল লগইনে সমস্যা হয়েছে।');
     }
   };
+
+  if (isPending) {
+    return (
+      <div className="min-h-[75vh] flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-[75vh] flex items-center justify-center px-4 py-8 font-sans">
@@ -94,7 +111,7 @@ export default function SignInPage() {
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1">পাসওয়ার্ড</label>
+            <label className="block text-xs font-bold text-slate-700 mb-1">পাসওয়ার্ড</label>
             <input
               type="password"
               placeholder="••••••••"

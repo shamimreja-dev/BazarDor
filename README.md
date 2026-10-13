@@ -6,7 +6,7 @@
 
 ## 🌐 Project Links
 
-- **Live Website:** 
+- **Live Website:** https://bazar-dor-beige-one.vercel.app/
 - **GitHub Repository:** https://github.com/ProgrammingHero1/B14-A7-Bazar-Dor
 
 ## ✨ Features
