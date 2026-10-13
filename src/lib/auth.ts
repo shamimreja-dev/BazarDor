@@ -1,4 +1,3 @@
-
 import { betterAuth } from "better-auth";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
 import { MongoClient } from "mongodb";
@@ -13,17 +12,20 @@ const db = client.db("bazardor");
 export const auth = betterAuth({
   database: mongodbAdapter(db),
 
+  // Production URL and Vercel Preview Domains Allow kora
+  baseURL: process.env.BETTER_AUTH_URL || "https://bazar-dor-beige-one.vercel.app",
   trustedOrigins: [
-  "https://bazar-dor-beige-one.vercel.app",
-],
+    "https://bazar-dor-beige-one.vercel.app",
+    "https://*.vercel.app", // Shob Vercel preview domain allow korbe[cite: 13]
+    "http://localhost:3000"
+  ],
 
   emailAndPassword: {
     enabled: true,
   },
 
   socialProviders: {
-    ...(process.env.GOOGLE_CLIENT_ID &&
-    process.env.GOOGLE_CLIENT_SECRET
+    ...(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET
       ? {
           google: {
             clientId: process.env.GOOGLE_CLIENT_ID,
@@ -32,8 +34,7 @@ export const auth = betterAuth({
         }
       : {}),
 
-    ...(process.env.GITHUB_CLIENT_ID &&
-    process.env.GITHUB_CLIENT_SECRET
+    ...(process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET
       ? {
           github: {
             clientId: process.env.GITHUB_CLIENT_ID,
